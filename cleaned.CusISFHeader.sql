@@ -1,4 +1,4 @@
-CREATE VIEW [cleaned].[CusISFHeader] AS
+CREATE OR ALTER VIEW [cleaned].[CusISFHeader] AS
 WITH CusISFHeader AS (
     SELECT
         [BF_ActionReasonCode]
