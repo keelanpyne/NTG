@@ -1,0 +1,41 @@
+CREATE VIEW cleaned.RatingHeader AS
+WITH RatingHeader AS (
+    SELECT
+        [TH_Accepted]
+        ,[TH_AirCFX]
+        ,[TH_AutoVersion]
+        ,[TH_ClientAccepted]
+        ,[TH_ExportAirCFX]
+        ,[TH_ExportSeaCFX]
+        ,[TH_FollowUpDate]
+        ,[TH_GC]
+        ,[TH_GS_NKFirstSignatory]
+        ,[TH_GS_NKSecondSignatory]
+        ,[TH_GlobalRateDescription]
+        ,CAST([TH_GlobalRateLevel] AS numeric) AS TH_GlobalRateLevel
+        ,[TH_IsCancelled]
+        ,[TH_IsLocked]
+        ,[TH_IsOneOffQuoteConsumed]
+        ,[TH_IsValid]
+        ,[TH_OH]
+        ,[TH_OneTimeQuote]
+        ,[TH_PK]
+        ,[TH_PrintInheritedDestinationCharges]
+        ,[TH_PrintInheritedOriginCharges]
+        ,[TH_PrintRateLevelDestinationCharges]
+        ,[TH_PrintRateLevelOriginCharges]
+        ,[TH_QuoteCancellationReason]
+        ,[TH_QuoteDate]
+        ,[TH_QuoteEndDate]
+        ,[TH_QuoteNumber]
+        ,[TH_RX_NKSpotRateCurrency]
+        ,[TH_RateType]
+        ,[TH_SeaCFX]
+        ,CAST([TH_SpotRate] AS numeric) AS TH_SpotRate
+        ,[TH_SystemCreateTimeUtc]
+        ,[TH_SystemCreateUser]
+        ,[TH_SystemLastEditTimeUtc]
+        ,[TH_SystemLastEditUser]
+    FROM [cargowise_dk_wrld].[RatingHeader]
+)
+SELECT * FROM RatingHeader;
