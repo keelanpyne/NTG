@@ -1,4 +1,4 @@
-CREATE VIEW cleaned.us_AccTransactionLines AS
+CREATE OR ALTER VIEW cleaned.us_AccTransactionLines AS
 WITH us_AccTransactionLines AS (
     SELECT
         [AL_A9_VATClass]
