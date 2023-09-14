@@ -1,7 +1,8 @@
-CREATE VIEW cleaned.us_AccTransactionHeader AS
+CREATE OR ALTER VIEW cleaned.us_AccTransactionHeader AS
 WITH us_AccTransactionHeader AS (
     SELECT
-      [AH_Ledger]
+       [AH_PK]
+      ,[AH_Ledger]
       ,[AH_TransactionType]
       ,[AH_ComplianceSubType]
       ,[AH_TransactionNum]
