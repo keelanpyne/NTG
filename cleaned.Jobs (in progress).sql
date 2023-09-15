@@ -35,4 +35,13 @@ SELECT
     AP.AL_AP_RevRecognitionType
 FROM AR
 JOIN AP
-ON AR."AL_PK" = AP."AL_PK";-- needs other queries --
+ON AR."AL_PK" = AP."AL_PK";
+
+-- rev_recongition_joins --
+
+SELECT TOP 10 
+    A.D3_JH,
+    A.D3_RecognitionType
+FROM cargowise_dk_wrld.JobChargeRevRecognition as A
+JOIN cargowise_dk_wrld.JobCharge as B
+ON;
