@@ -1,47 +1,57 @@
-WITH AR AS (
-    SELECT
-        A.AL_PostDate as "AL_AR_PostDate",
-        A.AL_PK,
-        A.AL_RevRecognitionType as "AL_AR_RevRecognitionType",
-        B.JR_ChargeType,
-        B.JR_EstimatedCost,
-        B.JR_PK,
-        B.JR_LocalCostAmt,
-        B.JR_LocalSellAmt
-    FROM cargowise_dk_wrld.AccTransactionLines as A
-    JOIN cargowise_dk_wrld.JobCharge as B
-    ON A.AL_PK = B.JR_AL_ARLine
-),
-AP AS (
+----- AP Rev Recognition ------
+
+WITH AP AS (
     SELECT
         D.AL_PostDate as "AL_AP_PostDate",
         D.AL_PK,
-        D.AL_RevRecognitionType as "AL_AP_RevRecognitionType"
+        D.AL_RevRecognitionType as "AL_AP_RevRecognitionType",
+        E.JR_JH
     FROM cargowise_dk_wrld.AccTransactionLines as D
     JOIN cargowise_dk_wrld.JobCharge as E
     ON D.AL_PK = E.JR_AL_APLine
-)
-SELECT
-    AR.AL_AR_PostDate,
-    AR.AL_PK,
-    AR.AL_AR_RevRecognitionType,
-    AR.JR_ChargeType,
-    AR.JR_EstimatedCost,
-    AR.JR_PK,
-    AR.JR_LocalCostAmt,
-    AR.JR_LocalSellAmt,
-    AP.AL_AP_PostDate,
-    AP.AL_PK,
-    AP.AL_AP_RevRecognitionType
-FROM AR
-JOIN AP
-ON AR."AL_PK" = AP."AL_PK";
+),
 
--- rev_recongition_joins --
+-- SELECT * FROM AP;
 
-SELECT TOP 10 
-    A.D3_JH,
-    A.D3_RecognitionType
-FROM cargowise_dk_wrld.JobChargeRevRecognition as A
-JOIN cargowise_dk_wrld.JobCharge as B
-ON;
+AP_JR AS (
+    SELECT
+        D3_JH, 
+        D3_RecognitionType
+    FROM cargowise_dk_wrld.JobChargeRevRecognition)
+
+-- SELECT * FROM AP_JR;
+    
+SELECT 
+    * 
+FROM AP_JR
+LEFT OUTER JOIN AP
+ON AP.JR_JH = AP_JR.D3_JH AND AP.AL_AP_RevRecognitionType = AP_JR.D3_RecognitionType;
+
+----- AR Rev Recognition ------
+
+WITH AR AS (
+    SELECT
+        D.AL_PostDate as "AL_AR_PostDate",
+        D.AL_PK,
+        D.AL_RevRecognitionType as "AL_AR_RevRecognitionType",
+        E.JR_JH
+    FROM cargowise_dk_wrld.AccTransactionLines as D
+    JOIN cargowise_dk_wrld.JobCharge as E
+    ON D.AL_PK = E.JR_AL_ARLine
+),
+
+-- SELECT * FROM AP;
+
+AR_JR AS (
+    SELECT
+        D3_JH, 
+        D3_RecognitionType
+    FROM cargowise_dk_wrld.JobChargeRevRecognition)
+
+-- SELECT * FROM AP_JR;
+    
+SELECT 
+   top 10 * 
+FROM AR_JR
+LEFT OUTER JOIN AR
+ON AR.JR_JH = AR_JR.D3_JH AND AR.AL_AR_RevRecognitionType = AR_JR.D3_RecognitionType;
