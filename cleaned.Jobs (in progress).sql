@@ -104,6 +104,3 @@ SELECT TOP 1 * FROM cargowise_dk_wrld.JobHeader;
 
 
 
-
-
-
