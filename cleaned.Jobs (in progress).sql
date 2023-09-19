@@ -1,6 +1,4 @@
------ AR Rev Recognition ------
-
-WITH AR AS (
+WITH Jobs_AR AS (
     SELECT
         A.AL_PostDate as "AL_AR_PostDate",
         A.AL_PK,
@@ -17,14 +15,15 @@ WITH AR AS (
         B.JR_ChargeType,
         B.JR_EstimatedCost,
         B.JR_EstimatedRevenue,
-        B.JR_JH
-    FROM cargowise_dk_wrld.AccTransactionLines as A
-    LEFT OUTER JOIN cargowise_dk_wrld.JobCharge as B
-    ON A.AL_PK = B.JR_AL_ARLine
-),
-
-AR_JH AS(
-    SELECT
+        B.JR_JH,
+        C.D3_PK,
+        C.D3_RecognitionType,
+        C.D3_RecognitionDate,
+        C.D3_JH,
+        C.D3_SystemCreateTimeUtc,
+        C.D3_SystemCreateUser,
+        C.D3_SystemLastEditTimeUtc,
+        C.D3_SystemLastEditUser,
         D.JH_JobNum,
         D.JH_Status,
         D.JH_A_JOP,
@@ -35,33 +34,10 @@ AR_JH AS(
         D.JH_GS_NKRepOps,
         D.JH_JobType,
         D.JE,
-       --E.JK,
-       --E.WD,
         D.WKI,
         D.JS,
         D.TH,
-        --E.BF
         D.JH_PK,
-        E.JR_PK,
-        E.JR_GE,
-        E.JR_GB,
-        E.JR_AC,
-        E.JR_OH_CostAccount,
-        E.JR_LocalCostAmt,
-        E.JR_PaymentDate,
-        E.JR_OH_SellAccount,
-        E.JR_LocalSellAmt,
-        E.JR_ChargeType,
-        E.JR_EstimatedCost,
-        E.JR_EstimatedRevenue,
-        E.JR_JH
-    FROM cargowise_dk_wrld.JobHeader AS D
-    LEFT OUTER JOIN AR AS E
-    ON D.JH_PK = E.JR_JH
-),
-
-AR_JS AS(
-    SELECT
         F.JS_ShipmentStatus,
         F.JS_RL_NKOrigin,
         F.JS_RL_NKDestination,
@@ -75,40 +51,11 @@ AR_JS AS(
         F.JS_ShipmentType,
         F.JS_LoadingMeters,
         F.JS_RL_NKPlaceOfReceipt,
-        F.JS_RL_NKPlaceOfDischarge,
-        G.JH_JobNum,
-        G.JH_Status,
-        G.JH_A_JOP,
-        G.JH_A_JCL,
-        G.JH_OA_LocalChargesAddr,
-        G.JH_OA_AgentCollectAddr,
-        G.JH_GS_NKRepSales,
-        G.JH_GS_NKRepOps,
-        G.JH_JobType,
-        G.JE,
-       --G.JK,
-       --G.WD,
-        G.WKI,
-        G.JS,
-        G.TH,
-        --G.BF
-        G.JH_PK,
-        G.JR_PK,
-        G.JR_GE,
-        G.JR_GB,
-        G.JR_AC,
-        G.JR_OH_CostAccount,
-        G.JR_LocalCostAmt,
-        G.JR_PaymentDate,
-        G.JR_OH_SellAccount,
-        G.JR_LocalSellAmt,
-        G.JR_ChargeType,
-        G.JR_EstimatedCost,
-        G.JR_EstimatedRevenue,
-        G.JR_JH
-    FROM cargowise_dk_wrld.JobShipment AS F
-    LEFT OUTER JOIN AR_JH AS G
-    ON G.JS = F.JS_PK
-)
+        F.JS_RL_NKPlaceOfDischarge
+    FROM cleaned.AccTransactionLines as A
+    LEFT JOIN cleaned.JobCharge as B ON UPPER(A.AL_PK) = UPPER(B.JR_AL_ARLine)
+    LEFT JOIN cleaned.JobChargeRevRecognition as C on UPPER(C.D3_JH) = UPPER(B.JR_JH) AND UPPER(C.D3_RecognitionType) = UPPER(A.AL_RevRecognitionType)
+    LEFT JOIN cargowise_dk_wrld.JobHeader as D ON UPPER(D.JH_PK) = UPPER(B.JR_JH)
+    LEFT JOIN cleaned.JobShipment AS F ON UPPER(F.JS_PK) = UPPER(D.JS))
 
-SELECT * FROM AR_JS;
+    SELECT * FROM Jobs_AR;
