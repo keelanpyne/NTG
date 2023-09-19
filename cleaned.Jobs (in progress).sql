@@ -1,4 +1,4 @@
-WITH Jobs_AR AS (
+WITH Jobs AS (
     SELECT
         A.AL_PostDate as "AL_AR_PostDate",
         A.AL_PK,
@@ -18,7 +18,7 @@ WITH Jobs_AR AS (
         B.JR_JH,
         C.D3_PK,
         C.D3_RecognitionType,
-        C.D3_RecognitionDate,
+        C.D3_RecognitionDate AS "AR_RecognitionDate",
         C.D3_JH,
         C.D3_SystemCreateTimeUtc,
         C.D3_SystemCreateUser,
@@ -58,4 +58,65 @@ WITH Jobs_AR AS (
     LEFT JOIN cargowise_dk_wrld.JobHeader as D ON UPPER(D.JH_PK) = UPPER(B.JR_JH)
     LEFT JOIN cleaned.JobShipment AS F ON UPPER(F.JS_PK) = UPPER(D.JS))
 
-    SELECT * FROM Jobs_AR;
+    SELECT 
+        A.AL_AR_PostDate,
+        A.AL_PK,
+        A.AL_AR_RevRecognitionType,
+        A.JR_PK,
+        A.JR_GE,
+        A.JR_GB,
+        A.JR_AC,
+        A.JR_OH_CostAccount,
+        A.JR_LocalCostAmt,
+        A.JR_PaymentDate,
+        A.JR_OH_SellAccount,
+        A.JR_LocalSellAmt,
+        A.JR_ChargeType,
+        A.JR_EstimatedCost,
+        A.JR_EstimatedRevenue,
+        A.JR_JH,
+        A.D3_PK,
+        A.D3_RecognitionType,
+        CASE
+            WHEN AR_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
+            ELSE AR_RecognitionDate
+        END AS AR_RecognitionDate,
+        A.AR_RecognitionDate,
+        A.D3_JH,
+        A.D3_SystemCreateTimeUtc,
+        A.D3_SystemCreateUser,
+        A.D3_SystemLastEditTimeUtc,
+        A.D3_SystemLastEditUser,
+        A.JH_JobNum,
+        A.JH_Status,
+        A.JH_A_JOP,
+        A.JH_A_JCL,
+        A.JH_OA_LocalChargesAddr,
+        A.JH_OA_AgentCollectAddr,
+        A.JH_GS_NKRepSales,
+        A.JH_GS_NKRepOps,
+        A.JH_JobType,
+        A.JE,
+        A.WKI,
+        A.JS,
+        A.TH,
+        A.JH_PK,
+        A.JS_ShipmentStatus,
+        A.JS_RL_NKOrigin,
+        A.JS_RL_NKDestination,
+        A.JS_TransportMode,
+        A.JS_ActualVolume,
+        A.JS_UnitOfVolume,
+        A.JS_ActualWeight,
+        A.JS_UnitOfWeight,
+        A.JS_ActualChargeable,
+        A.JS_UnitFreightRate,
+        A.JS_ShipmentType,
+        A.JS_LoadingMeters,
+        A.JS_RL_NKPlaceOfReceipt,
+        A.JS_RL_NKPlaceOfDischarge
+    FROM Jobs AS A;
+
+
+
+
