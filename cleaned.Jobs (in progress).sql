@@ -1,4 +1,4 @@
-WITH Jobs AS (
+WITH Jobs_AR AS (
     SELECT
         A.AL_PostDate as "AL_AR_PostDate",
         A.AL_PK,
@@ -33,10 +33,7 @@ WITH Jobs AS (
         D.JH_GS_NKRepSales,
         D.JH_GS_NKRepOps,
         D.JH_JobType,
-        D.JE,
-        D.WKI,
         D.JS,
-        D.TH,
         D.JH_PK,
         F.JS_ShipmentStatus,
         F.JS_RL_NKOrigin,
@@ -56,12 +53,28 @@ WITH Jobs AS (
     LEFT JOIN cleaned.JobCharge as B ON UPPER(A.AL_PK) = UPPER(B.JR_AL_ARLine)
     LEFT JOIN cleaned.JobChargeRevRecognition as C on UPPER(C.D3_JH) = UPPER(B.JR_JH) AND UPPER(C.D3_RecognitionType) = UPPER(A.AL_RevRecognitionType)
     LEFT JOIN cargowise_dk_wrld.JobHeader as D ON UPPER(D.JH_PK) = UPPER(B.JR_JH)
-    LEFT JOIN cleaned.JobShipment AS F ON UPPER(F.JS_PK) = UPPER(D.JS))
+    LEFT JOIN cleaned.JobShipment AS F ON UPPER(F.JS_PK) = UPPER(D.JS)),
+
+    Jobs_AP AS (
+    SELECT
+        A.AL_PostDate as "AL_AP_PostDate",
+        A.AL_PK,
+        A.AL_RevRecognitionType as "AL_AP_RevRecognitionType",
+        B.JR_PK,
+        C.D3_PK,
+        C.D3_RecognitionType,
+        C.D3_RecognitionDate AS "AP_RecognitionDate",
+        C.D3_JH
+    FROM cleaned.AccTransactionLines as A
+    LEFT JOIN cleaned.JobCharge as B ON UPPER(A.AL_PK) = UPPER(B.JR_AL_APLine)
+    LEFT JOIN cleaned.JobChargeRevRecognition as C on UPPER(C.D3_JH) = UPPER(B.JR_JH) AND UPPER(C.D3_RecognitionType) = UPPER(A.AL_RevRecognitionType))
 
     SELECT 
         A.AL_AR_PostDate,
         A.AL_PK,
         A.AL_AR_RevRecognitionType,
+        B.AL_AP_PostDate,
+        B.AL_AP_RevRecognitionType,
         A.JR_PK,
         A.JR_GE,
         A.JR_GB,
@@ -81,7 +94,10 @@ WITH Jobs AS (
             WHEN AR_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
             ELSE AR_RecognitionDate
         END AS AR_RecognitionDate,
-        A.AR_RecognitionDate,
+        CASE
+            WHEN AP_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
+            ELSE AP_RecognitionDate
+        END AS AP_RecognitionDate,
         A.D3_JH,
         A.D3_SystemCreateTimeUtc,
         A.D3_SystemCreateUser,
@@ -96,10 +112,7 @@ WITH Jobs AS (
         A.JH_GS_NKRepSales,
         A.JH_GS_NKRepOps,
         A.JH_JobType,
-        A.JE,
-        A.WKI,
         A.JS,
-        A.TH,
         A.JH_PK,
         A.JS_ShipmentStatus,
         A.JS_RL_NKOrigin,
@@ -115,7 +128,9 @@ WITH Jobs AS (
         A.JS_LoadingMeters,
         A.JS_RL_NKPlaceOfReceipt,
         A.JS_RL_NKPlaceOfDischarge
-    FROM Jobs AS A;
+    FROM Jobs_AR AS A
+    JOIN Jobs_AP AS B
+    ON A.AL_PK = B.AL_PK;
 
 
 
