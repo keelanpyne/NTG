@@ -112,3 +112,32 @@ AR_JS AS(
 )
 
 SELECT * FROM AR_JS;
+
+
+SELECT 
+       *,
+       CASE 
+            WHEN AR_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
+            ELSE AR_RecognitionDate
+        END AS AR_RecognitionDate,
+        CASE
+            WHEN AL_AR_RevRecognitionType = 'IMM' THEN
+               CASE
+                   WHEN AL_AR_PostDate IS NULL THEN AL_AR_PostDate
+                   ELSE AL_AR_PostDate
+               END
+           ELSE AR_RecognitionDate
+       END AS RevenueRecognitionDate,
+       CASE
+           WHEN AL_AR_RevRecognitionType = 'IMM' THEN
+               CASE
+                   WHEN AL_AR_PostDate IS NULL THEN AL_AR_PostDate
+                   ELSE AL_AR_PostDate
+               END
+           ELSE AR_RecognitionDate
+       END AS CostRecognitionDate
+FROM AR_JR
+LEFT OUTER JOIN AR
+ON AR.JR_JH = AR_JR.D3_JH AND AR.AL_AR_RevRecognitionType = AR_JR.D3_RecognitionType;
+
+SELECT TOP 1 * FROM cargowise_dk_wrld.JobHeader;
