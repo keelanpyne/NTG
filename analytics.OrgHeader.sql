@@ -1,4 +1,4 @@
-CREATE VIEW cleaned.OrgHeader AS
+CREATE VIEW analytics.OrgHeader AS
 WITH OrgHeader AS (
     SELECT
     [OH_IsValid]
@@ -83,6 +83,6 @@ WITH OrgHeader AS (
       ,[OH_IsFerryWaterTerminal]
       ,[OH_IsContainerLeasingCompany]
       ,[OH_OverrideAdditionalAddressInformation]
-    FROM [cargowise_dk_wrld].[OrgHeader]
+    FROM [cleaned].[OrgHeader]
 )
 SELECT * FROM OrgHeader;
