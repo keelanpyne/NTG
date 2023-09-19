@@ -1,3 +1,4 @@
+CREATE OR ALTER VIEW analytics.Jobs AS
 WITH Jobs_AR AS (
     SELECT
         A.AL_PostDate as "AL_AR_PostDate",
@@ -86,14 +87,6 @@ WITH Jobs_AR AS (
         A.JR_JH,
         A.D3_PK,
         A.D3_RecognitionType,
-        CASE
-            WHEN AR_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
-            ELSE AR_RecognitionDate
-        END AS AR_RecognitionDate,
-        CASE
-            WHEN AP_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
-            ELSE AP_RecognitionDate
-        END AS AP_RecognitionDate,
         A.D3_JH,
         A.D3_SystemCreateTimeUtc,
         A.D3_SystemCreateUser,
@@ -123,7 +116,31 @@ WITH Jobs_AR AS (
         A.JS_ShipmentType,
         A.JS_LoadingMeters,
         A.JS_RL_NKPlaceOfReceipt,
-        A.JS_RL_NKPlaceOfDischarge
+        A.JS_RL_NKPlaceOfDischarge,
+        CASE
+            WHEN AR_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
+            ELSE AR_RecognitionDate
+        END AS AR_RecognitionDate,
+            CASE
+            WHEN AP_RecognitionDate = '1900-01-01 00:00:00' THEN NULL
+            ELSE AP_RecognitionDate
+        END AS AP_RecognitionDate,
+        CASE
+        WHEN AL_AR_RevRecognitionType = 'IMM' THEN
+            CASE
+                WHEN AL_AR_PostDate IS NULL THEN AL_AP_PostDate
+                ELSE AL_AR_PostDate
+            END
+        ELSE AR_RecognitionDate
+    END AS [Revenue_Recognition_Date],
+    CASE
+        WHEN AL_AP_RevRecognitionType = 'IMM' THEN
+            CASE
+                WHEN AL_AP_PostDate IS NULL THEN AL_AR_PostDate
+                ELSE AL_AP_PostDate
+            END
+        ELSE AP_RecognitionDate
+    END AS [Cost Recognition Date]
     FROM Jobs_AR AS A
     JOIN Jobs_AP AS B
     ON UPPER(A.AL_PK) = UPPER(B.AL_PK);
