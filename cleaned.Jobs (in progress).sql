@@ -60,11 +60,7 @@ WITH Jobs_AR AS (
         A.AL_PostDate as "AL_AP_PostDate",
         A.AL_PK,
         A.AL_RevRecognitionType as "AL_AP_RevRecognitionType",
-        B.JR_PK,
-        C.D3_PK,
-        C.D3_RecognitionType,
-        C.D3_RecognitionDate AS "AP_RecognitionDate",
-        C.D3_JH
+        C.D3_RecognitionDate AS "AP_RecognitionDate"
     FROM cleaned.AccTransactionLines as A
     LEFT JOIN cleaned.JobCharge as B ON UPPER(A.AL_PK) = UPPER(B.JR_AL_APLine)
     LEFT JOIN cleaned.JobChargeRevRecognition as C on UPPER(C.D3_JH) = UPPER(B.JR_JH) AND UPPER(C.D3_RecognitionType) = UPPER(A.AL_RevRecognitionType))
@@ -130,8 +126,4 @@ WITH Jobs_AR AS (
         A.JS_RL_NKPlaceOfDischarge
     FROM Jobs_AR AS A
     JOIN Jobs_AP AS B
-    ON A.AL_PK = B.AL_PK;
-
-
-
-
+    ON UPPER(A.AL_PK) = UPPER(B.AL_PK);
