@@ -1,7 +1,12 @@
-CREATE OR ALTER VIEW cleaned.us_AccTransactionLines AS
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE OR ALTER VIEW [cleaned].[us_AccTransactionLines] AS
 WITH us_AccTransactionLines AS (
     SELECT
-        [AL_A9_VATClass]
+        [AL_PK]
+        ,[AL_A9_VATClass]
         ,[AL_AC]
         ,[AL_AG]
         ,[AL_AG_PercentOf]
