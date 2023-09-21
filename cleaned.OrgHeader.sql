@@ -1,7 +1,8 @@
-CREATE VIEW cleaned.OrgHeader AS
+CREATE OR ALTER VIEW [cleaned].[OrgHeader] AS
 WITH OrgHeader AS (
     SELECT
-    [OH_IsValid]
+       [OH_IsValid]
+      ,[OH_PK]       
       ,[OH_Code]
       ,[OH_IsActive]
       ,[OH_FullName]
@@ -86,3 +87,4 @@ WITH OrgHeader AS (
     FROM [cargowise_dk_wrld].[OrgHeader]
 )
 SELECT * FROM OrgHeader;
+GO
