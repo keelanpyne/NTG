@@ -1,7 +1,8 @@
-CREATE VIEW cleaned.AccTransactionHeader AS
+CREATE OR ALTER VIEW [cleaned].[AccTransactionHeader] AS
 WITH AccTransactionHeader AS (
     SELECT
-      [AH_Ledger]
+       [AH_Ledger]
+      ,[AH_PK]
       ,[AH_TransactionType]
       ,[AH_ComplianceSubType]
       ,[AH_TransactionNum]
@@ -94,3 +95,4 @@ WITH AccTransactionHeader AS (
     FROM [cargowise_dk_wrld].[AccTransactionHeader]
 )
 SELECT * FROM AccTransactionHeader;
+GO
